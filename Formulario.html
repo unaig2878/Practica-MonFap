@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+</head>
+<body>
+    <header>
+        
+        <nav>
+            <ul>
+                <li><a href="FAQ.html">FAQ</a></li>
+                <li><a href="Tabla.html">Tabla</a></li>
+                <li><a href="Inicio.html">Inicio</a></li>
+                <li><a href="Sensores.html">Sensores</a></li>
+            </ul>
+        </nav>
+    </header>
+    <form action="procesar_formulario.php" method="post">
+        <label for="nombre">Nombre del elemento:</label>
+        <input type="text" id="nombre" name="nombre" required><br>
+
+        <label for="descripcion">Descripción del elemento:</label><br>
+        <textarea  name="descripcion" rows="4" cols="50" required></textarea><br>
+
+        <label for="numero_serie">Número de serie del elemento:</label>
+        <input type="text"  name="numero_serie" required><br>
+
+        <label>Estado (activo/inactivo):</label>
+        <input type="checkbox" name="estado" value="activo">
+        <label for="activo">Activo</label>
+        <input type="checkbox"  name="estado" value="inactivo">
+        <label for="inactivo">Inactivo</label><br>
+
+        <label>Prioridad (alta/media/baja):</label><br>
+        <input type="radio"  name="prioridad" value="alta" required>
+        <label for="alta">Alta</label><br>
+        <input type="radio"  name="prioridad" value="media" required>
+        <label for="media">Media</label><br>
+        <input type="radio"  name="prioridad" value="baja" required>
+        <label for="baja">Baja</label><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>
