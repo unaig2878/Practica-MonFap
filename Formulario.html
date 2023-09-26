@@ -18,9 +18,9 @@
         </nav>
     </header>
     <!--Formulario-->
-    <form action="process_form.php" method="post">
+    <form action="process_form.php">
         <label >Element Name:</label>
-        <input type="text" required><br>
+        <input type="text"  required><br>
     
         <label >Element Description:</label><br>
         <textarea  rows="4" cols="50" required></textarea><br>
@@ -29,21 +29,22 @@
         <input type="text"  required><br>
     
         <label>Status (active/inactive):</label>
-        <input type="checkbox" name="status" >
-        <label >Active</label>
-        <input type="checkbox"  >
-        <label >Inactive</label><br>
+        <input type="checkbox" id="active" >
+        <label for="active">Active</label>
+        <input type="checkbox" id="inactive" >
+        <label for="inactive">Inactive</label><br>
     
         <label>Priority (high/medium/low):</label><br>
-        <input type="radio"  required>
+        <input type="radio" id="high"  required>
         <label for="high">High</label><br>
-        <input type="radio"  required>
+        <input type="radio" id="medium"  required>
         <label for="medium">Medium</label><br>
-        <input type="radio"  required>
+        <input type="radio" id="low"  required>
         <label for="low">Low</label><br>
     
         <input type="submit" value="Submit">
     </form>
+    
     
 </body>
 </html>
