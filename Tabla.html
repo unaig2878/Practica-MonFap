@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Table</title>
+    <script defer src="js/main.js"></script>
 </head>
+
 <body>
     <header>
         <!--Links a paginas-->
@@ -17,37 +20,26 @@
             </ul>
         </nav>
     </header>
-        <h2>Entered Data:</h2>
-        <table border="1">
-            <thead>
-                <!--Main Fields-->
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Serial Number</th>
-                    <th>Status</th>
-                    <th>Priority</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!--Fill in Fields-->
-                <tr>
-                    <td>Laptop Dell</td>
-                    <td>Laptop computer</td>
-                    <td>XYZ7890</td>
-                    <td>Active</td>
-                    <td>High</td>
-                </tr>
-                <tr>
-                    <td>HP Printer</td>
-                    <td>Monochrome laser printer</td>
-                    <td>PQR5678</td>
-                    <td>Inactive</td>
-                    <td>Medium</td>
-                </tr>
-            </tbody>
-        </table>
-        
-        
+    <h2>Entered Data:</h2>
+    <input type="text" value="Filtrar la tabla" id="Filtrar" oninput="filtrarTabla()">
+    <table id="elementTable" border="1">
+        <thead>
+            <!--Main Fields-->
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Serial Number</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+
+
 </body>
+
 </html>

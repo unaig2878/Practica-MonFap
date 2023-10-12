@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form</title>
+    <script src="js/main.js" defer></script>
 </head>
 <body>
     <header>
@@ -18,15 +19,15 @@
         </nav>
     </header>
     <!--Formulario-->
-    <form action="process_form.php">
+    <form id="form" action="Tabla.html">
         <label >Element Name:</label>
-        <input type="text"  required><br>
+        <input id="element_name" type="text"  required><br>
     
         <label >Element Description:</label><br>
-        <textarea  rows="4" cols="50" required></textarea><br>
+        <textarea id="element_description" rows="4" cols="50" required></textarea><br>
     
         <label >Element Serial Number:</label>
-        <input type="text"  required><br>
+        <input id="element_serial_number" type="text"  required><br>
     
         <label>Status (active/inactive):</label>
         <input type="checkbox" id="active" >
