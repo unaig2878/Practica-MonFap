@@ -1,38 +1,9 @@
-/*const elements = [];
-
-function formSubmit() {
-    document.getElementById('form').addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        // Obtener los valores de los campos del formulario
-        const name = document.getElementById('element_name').value;
-        const description = document.getElementById('element_description').value;
-        const serialNumber = document.getElementById('element_serial_number').value;
-        const status = document.getElementById('active').checked ? 'active' : 'inactive';
-        const priority = document.getElementById('high').checked ? 'high' : (document.getElementById('medium').checked ? 'medium' : 'low');
-
-        // Creamos el objeto 
-        const newInput = {
-            name: name,
-            description: description,
-            serialNumber: serialNumber,
-            status: status,
-            priority: priority
-        };
-
-        // Hacemos push del objeto al array
-        elements.push(newInput);
-
-        // Mostramos el array
-        console.log(elements);
-        //llamamos a la funcion que rellena los campos
-        updateTable(elements);
-    });
-}*/
 
 var elements = [
     { name: 'Sensor 1', description: 'Este sensor se dedica a...', serialNumber: 'SN001', status: 'Activo', priority: 'Alta' },
-    { name: 'Sensor 2', description: 'este sensir se de dica a ser sensible 2', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
+    { name: '', description: 'este sensir se de dica a ser sensible 2', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
+    { name: 'Sensor 3', description: 'patata', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
+    { name: 'Sensor 4', description: 'este sensir se de dica a ser sensible 2', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
     // Agrega más objetos según sea necesario
 ];
 

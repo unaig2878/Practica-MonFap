@@ -19,28 +19,28 @@
         </nav>
     </header>
     <!--Formulario-->
-    <form id="form" action="Tabla.html">
+    <form id="form" action="/DWC/MonFap/ws/createElement.php" method="POST">
         <label >Element Name:</label>
-        <input id="element_name" type="text"  required><br>
+        <input id="element_name" name="element_name" type="text"  required><br>
     
         <label >Element Description:</label><br>
-        <textarea id="element_description" rows="4" cols="50" required></textarea><br>
+        <textarea id="element_description" name="element_description" rows="4" cols="50" required></textarea><br>
     
         <label >Element Serial Number:</label>
-        <input id="element_serial_number" type="text"  required><br>
+        <input id="element_serial_number" name="element_serial_number" type="text"  required><br>
     
         <label>Status (active/inactive):</label>
-        <input type="checkbox" id="active" >
+        <input type="checkbox" name="status" id="active" >
         <label for="active">Active</label>
-        <input type="checkbox" id="inactive" >
+        <input type="checkbox" name="status" id="inactive" >
         <label for="inactive">Inactive</label><br>
     
         <label>Priority (high/medium/low):</label><br>
-        <input type="radio" id="high"  required>
+        <input type="radio" id="high" name="priority"  required>
         <label for="high">High</label><br>
-        <input type="radio" id="medium"  required>
+        <input type="radio" id="medium" name="priority"  required>
         <label for="medium">Medium</label><br>
-        <input type="radio" id="low"  required>
+        <input type="radio" id="low" name="priority"  required>
         <label for="low">Low</label><br>
     
         <input type="submit" value="Submit">
