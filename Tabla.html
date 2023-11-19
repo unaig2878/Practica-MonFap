@@ -5,20 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Table</title>
+    <script defer src="js/nav.js"></script>
     <script defer src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
     <header>
-        <!--Links a paginas-->
-        <nav>
-            <ul>
-                <li><a href="FAQ.html">FAQ</a></li>
-                <li><a href="Formulario.html">Formulario</a></li>
-                <li><a href="Inicio.html">Inicio</a></li>
-                <li><a href="Sensores.html">Sensores</a></li>
-            </ul>
-        </nav>
+        
     </header>
     <h2>Entered Data:</h2>
     <input type="text" value="Filtrar la tabla" id="Filtrar" oninput="filtrarTabla()">
@@ -38,6 +32,9 @@
 
         </tbody>
     </table>
+    <div id="container">
+        
+    </div>
 
 
 </body>

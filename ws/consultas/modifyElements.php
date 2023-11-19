@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     //$params['id'] = $id;
 
     
-    $elem = Element::modifyById($id,$params);
+    $elem = Element::modifyById($id, $params);
 
     echo $elem;
 
