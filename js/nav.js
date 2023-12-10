@@ -19,7 +19,6 @@ function applyStyles(nav) {
         nav.style.display = 'flex';
         nav.style.justifyContent = 'space-between'; 
         nav.style.alignItems = 'center'; 
-        nav.style.backgroundColor = 'blue';
         nav.style.padding = '10px';
         nav.style.color = '#fff';
 

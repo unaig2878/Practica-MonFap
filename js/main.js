@@ -1,16 +1,42 @@
 
-let elements = [
-    { name: 'Sensor 1', description: 'Este sensor se dedica a...', serialNumber: 'SN001', status: 'Activo', priority: 'Alta' },
-    { name: '', description: 'este sensir se de dica a ser sensible 2', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
-    { name: 'Sensor 3', description: 'patata', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
-    { name: 'Sensor 4', description: 'este sensir se de dica a ser sensible 4', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
-];
+//let elements = [
+//{ name: 'Sensor 1', description: 'Este sensor se dedica a...', serialNumber: 'SN001', status: 'Activo', priority: 'Alta' },
+//{ name: '', description: 'este sensir se de dica a ser sensible 2', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
+//{ name: 'Sensor 3', description: 'patata', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
+//{ name: 'Sensor 4', description: 'este sensir se de dica a ser sensible 4', serialNumber: 'SN002', status: 'Inactivo', priority: 'Baja' },
+//];
+let elements = []; // Inicialmente vacío, se llenará con loadElements
+
+function loadElements() {
+    return fetch('./ws/consultas/getElement.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar elementos');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Data from server:', data);
+            if (data && data.success === true && Array.isArray(data.data) && data.data.length > 0) {
+                console.log('Data array:', data.data[0]);
+                return data.data[0];
+            } else {
+                console.error('Error al cargar elementos: Respuesta inesperada del servidor');
+                throw new Error('Error al cargar elementos');
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar elementos:', error);
+            throw error;
+        });
+}
 
 
 
 function updateTable(elements) {
     // Obtén la referencia al tbody de la tabla
     let tbody = document.getElementById('tbody');
+    tbody.innerHTML ='';
 
     // Itera sobre el array e inserta cada objeto en una fila de la tabla
     elements.forEach(function (element, index) {
@@ -23,33 +49,235 @@ function updateTable(elements) {
         let cell6 = row.insertCell(5);
 
         // Asigna los valores del objeto a las celdas de la fila
-        cell1.innerHTML = element.name;
-        cell2.innerHTML = element.description;
-        cell3.innerHTML = element.serialNumber;
-        cell4.innerHTML = element.status;
-        cell5.innerHTML = element.priority;
+        cell1.innerHTML = element.nombre;
+        cell2.innerHTML = element.descripcion;
+        cell3.innerHTML = element.nserie;
+        cell4.innerHTML = element.estado;
+        cell5.innerHTML = element.prioridad;
 
         let rowId = 'row-' + (index + 1);
         row.id = rowId;
 
 
-        cell6.innerHTML = '<button onclick="eliminar(\'' + rowId + '\')">X</button><button onclick="modificar(\'' + rowId + '\')">Modificar</button>';
+        cell6.innerHTML = '<button onclick="eliminar(event, \'' + rowId + '\')">X</button><button onclick="modificar(\'' + rowId + '\')">Modificar</button>';
     });
 }
 
-
-function eliminar(rowId) {
-
+function eliminar(ev, rowId) {
     console.log(rowId);
 
-    let row = document.getElementById(rowId);
-    let tbody = document.getElementById('tbody');
+    showConfirmation('eliminar', ev).then((confirmed) => {
+        if (confirmed) {
+            let row = document.getElementById(rowId);
+            let tbody = document.getElementById('tbody');
 
-    if (row && row.parentNode === tbody) {
-        row.remove();
-    } else {
-        console.error('La fila con el ID ' + rowId + ' no fue encontrada en el tbody.');
+            if (row && row.parentNode === tbody) {
+                let rowId1 = row.id;
+                let rowId2 = rowId1.substring(4);
+                console.log(rowId2);
+
+                // Realizar LLamada
+                fetch('./ws/consultas/deleteElement.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded', 
+                    },
+                    //Enviamos solo el id por que es lo unico que se necesita
+                    body: 'id=' + rowId2, 
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error al eliminar el elemento');
+                        }
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log('Response from deleteElement:', data);
+                        //que no este vacio
+                        if (data.trim() !== '') {
+                            // MMostrar Sweelalert con la respuesta del php
+                            if (data.includes('success') && JSON.parse(data).success) {
+                                Swal.fire({
+                                    title: 'Eliminado',
+                                    text: 'El elemento se eliminó correctamente.',
+                                    icon: 'success',
+                                });
+                                row.remove();
+                            } else {
+                                Swal.fire({
+                                    title: 'Error',
+                                    text: 'Error al eliminar el elemento.',
+                                    icon: 'error',
+                                });
+                            }
+                        } else {
+                            console.error('Error during deleteElement fetch: Empty response');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error durante la eliminación del elemento:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Error durante la eliminación del elemento.',
+                            icon: 'error',
+                        });
+                    });
+            } else {
+                console.error('La fila con el ID ' + rowId + ' no fue encontrada en el tbody.');
+            }
+        }
+    });
+}
+function crearFormulario(rowId1) {
+    let container = document.getElementById('container');
+    return new Promise((resolve, reject) => {
+        fetch('./formBluePrint.html')
+            .then(response => response.text())
+            .then(formHtml => {
+                container.innerHTML = formHtml;
+                let botonGuardar = document.getElementById('botonGuardar');
+
+
+                botonGuardar.addEventListener('click', function (event) {
+                    showConfirmation('modificar', event).then(() => {
+                        guardarDatos(event, rowId1);
+                    });
+                });
+
+                resolve();
+            })
+            .catch(error => {
+                console.error('Error during fetch operation:', error);
+                reject(error);
+            });
+    });
+}
+
+function guardarDatos(event,rowId1) {
+    event.preventDefault();
+
+    let elementName = document.getElementById('element_name').value;
+    let elementDescription = document.getElementById('element_description').value;
+    let elementSerialNumber = document.getElementById('element_serial_number').value;
+    let statusElement = document.querySelector('input[name="status"]:checked');
+    let priorityElement = document.querySelector('input[name="priority"]:checked');
+
+    let status1 = statusElement ? statusElement.id : null;
+    let priority1 = priorityElement ? priorityElement.id : null;
+
+    let rowId2 = rowId1.substring(4);
+    // Mapeo a las BD
+    const keyMapping = {
+        rowId2:'id',
+        element_name: 'nombre',
+        element_description: 'descripcion',
+        element_serial_number: 'nserie',
+        status1: 'estado',
+        priority1: 'prioridad'
+    };
+
+    //Meter los datos en un FormData
+    let formData = new FormData();
+    formData.append('id', rowId2);
+    formData.append('element_name', elementName);
+    formData.append('element_description', elementDescription);
+    formData.append('element_serial_number', elementSerialNumber);
+    formData.append('status', status1);
+    formData.append('priority', priority1);
+
+    for (let pair of formData.entries()) {
+        let [key, value] = pair;
+        // Verificar si esta en el mapeo
+        if (keyMapping[key]) {
+            formData.delete(key);
+            formData.append(keyMapping[key], value);
+        }
     }
+    console.log(formData);
+
+    fetch('./ws/consultas/modifyElements.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error during modifyElement fetch: ' + response.statusText);
+        }
+        return response.text();
+    })
+    .then(data => {
++        console.log('Response from modifyElement:', data);
+
+        // Actualizar la tabla
+        updateTable(elements);
+    })
+    .catch(error => {
+        console.error('Error during modifyElement fetch:', error);
+    });
+}
+
+function createElement2(event) {
+    event.preventDefault();
+
+    let elementName = document.getElementById('element_name').value;
+    let elementDescription = document.getElementById('element_description').value;
+    let elementSerialNumber = document.getElementById('element_serial_number').value;
+    let statusElement = document.querySelector('input[name="status"]:checked');
+    let priorityElement = document.querySelector('input[name="priority"]:checked');
+
+    let status1 = statusElement ? statusElement.id : null;
+    let priority1 = priorityElement ? priorityElement.id : null;
+
+    const requestData = {
+        element_name: elementName,
+        element_description: elementDescription,
+        element_serial_number: elementSerialNumber,
+        status: status1,
+        priority: priority1
+    };
+
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Una vez enviado, no podrás revertir esto.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, enviarlo'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('./ws/consultas/createElement2.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error during createElement fetch: ' + response.statusText);
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log('Response from createElement:', data);
+                Swal.fire({
+                    title: '¡Correcto!',
+                    text: 'El elemento se ha creado correctamente.',
+                    icon: 'success',
+                });
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: '¡Error!',
+                    text: 'Hubo un error al crear el elemento.',
+                    icon: 'error',
+                });
+
+                console.error('Error during createElement fetch:', error);
+            });
+        }
+    });
 }
 
 function modificar(rowId) {
@@ -89,7 +317,7 @@ function modificar(rowId) {
                 elementDescriptionInput.value = descriptionValue;
                 elementSerialNumberInput.value = serialNumberValue;
 
-                if (statusValue === 'Activo') {
+                if (statusValue === 'Active') {
                     activeCheckbox.checked = true;
                 } else if (statusValue === 'Inactivo') {
                     inactiveCheckbox.checked = true;
@@ -110,31 +338,7 @@ function modificar(rowId) {
     }
 }
 
-//crearformulario
-function crearFormulario(rowId1) {
-    let container = document.getElementById('container');
-    return new Promise((resolve, reject) => {
-        fetch('./formBluePrint.html')
-            .then(response => response.text())
-            .then(formHtml => {
-                container.innerHTML = formHtml;
-                let botonGuardar = document.getElementById('botonGuardar');
-
-
-                botonGuardar.addEventListener('click', function (event) {
-                    guardarDatos(event, rowId1);
-                });
-
-                resolve();
-            })
-            .catch(error => {
-                console.error('Error during fetch operation:', error);
-                reject(error);
-            });
-    });
-}
-
-function guardarDatos(event, rowId1) {
+function guardarDatos1(event, rowId1) {
     event.preventDefault();
     let elementName = document.getElementById('element_name').value;
     let elementDescription = document.getElementById('element_description').value;
@@ -194,28 +398,27 @@ function mostrarVideo() {
             confirmButtonText: "Yes, close it!"
         }).then((result) => {
             if (result.isConfirmed) {
-                document.addEventListener('mousemove', bloquearRaton);
 
                 if (!container) {
                     container = document.createElement('div');
                     document.body.appendChild(container);
                 }
-    
+
                 container.style.width = '100%';
                 container.style.height = '100%';
                 container.style.top = '0';
                 container.style.left = '0';
                 container.style.position = 'fixed';
-    
+
                 iframe.style.position = 'absolute';
                 iframe.style.width = '100%';
                 iframe.style.height = '100%';
                 iframe.style.pointerEvents = 'none';
-    
+
                 container.innerHTML = '';
                 container.appendChild(iframe);
-    
-                
+
+
                 Swal.fire({
                     title: "Deleted!",
                     text: "Your file has been deleted.",
@@ -225,7 +428,7 @@ function mostrarVideo() {
         });
     });
 }
-    
+
 
 
 
@@ -279,10 +482,69 @@ function resaltarCoincidencias(cell, isMatch) {
         cell.style.backgroundColor = 'yellow';
     }
 }
-document.addEventListener('DOMContentLoaded', function () {
-    updateTable(elements);
-});  
 
-function bloquearRaton(e) {
-    e.preventDefault();
-  }
+function showConfirmation(accion, event) {
+    event.preventDefault();
+
+    return new Promise((resolve) => {
+        let confirmText, successText, confirmButtonText;
+
+        switch (accion) {
+            case 'eliminar':
+                confirmText = "¿Estás seguro de eliminar?";
+                successText = "¡Eliminado!";
+                break;
+            case 'crear':
+                confirmText = "¿Estás seguro de crear?";
+                successText = "¡Creado!";
+                break;
+            case 'modificar':
+                confirmText = "¿Estas seguro de modificar?";
+                successText = "¡Modificado!";
+                break;
+
+            default:
+                break;
+        }
+
+        confirmButtonText = "Sí, " + accion;
+
+        Swal.fire({
+            title: confirmText,
+            text: "¡No podrás revertir esto!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: confirmButtonText
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: successText,
+                    text: "La operación se realizó con éxito.",
+                    icon: "success"
+                });
+                if (accion === 'crear') {
+                    document.getElementById("form").submit();
+                }
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.pathname.endsWith('Tabla.html')) {
+        loadElements()
+            .then(loadedElements => {
+                elements = loadedElements;
+                updateTable(elements);
+            })
+            .catch(error => {
+                console.error('Error al cargar elementos:', error);
+            });
+    }
+});

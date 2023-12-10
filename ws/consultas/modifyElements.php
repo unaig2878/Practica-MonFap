@@ -2,8 +2,8 @@
 require_once ".././models/Element.php";
 
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $id = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'];
 
     //Array asociativo con los parámetros
     $paramNames = [
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     ];
 
     // obtener solo las claves coincidentes
-    $params = array_intersect_key($_GET, $paramNames);
+    $params = array_intersect_key($_POST, $paramNames);
 
     
     //$params['id'] = $id;

@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form</title>
-    <script src="js/nav.js" defer></script>
+    <script defer src="js/nav.js"></script>
+    <script defer src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <header>
         
     </header>
     <!--Formulario-->
-    <form id="form" action="/DWC/MonFap/ws/consultas/createElement2.php" method="POST">
+    <form id="form" action="/DWC/MonFap/ws/consultas/createElement2.php" method="POST" onsubmit="return showConfirmation('crear', event)">
         <label >Element Name:</label>
         <input id="element_name" name="element_name" type="text"  required><br>
     
@@ -35,7 +37,7 @@
         <input type="radio" id="low" name="priority"  required>
         <label for="low">Low</label><br>
     
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" onclick="createElement2(event)">
     </form>
     
     
